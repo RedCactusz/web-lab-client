@@ -1,43 +1,94 @@
-import { STRUCTURE_DATA } from "@/app/(public)/struktur/_contents/structureData";
+import { KEPALA_LAB, DOSEN_LAB, PRAKTIKUM_DATA } from "@/app/(public)/struktur/_contents/structureData";
+
+const PRAKTIKUM_COLORS = [
+  { border: "border-blue-600", ring: "ring-blue-100", bg: "bg-blue-50", text: "text-blue-700" },
+  { border: "border-teal-600", ring: "ring-teal-100", bg: "bg-teal-50", text: "text-teal-700" },
+  { border: "border-emerald-600", ring: "ring-emerald-100", bg: "bg-emerald-50", text: "text-emerald-700" },
+  { border: "border-amber-600", ring: "ring-amber-100", bg: "bg-amber-50", text: "text-amber-700" },
+];
+
+function PersonCard({ name, role, image }: { name: string; role: string; image: string }) {
+  return (
+    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 text-center transition-transform hover:scale-105">
+      <img
+        src={image}
+        alt={name}
+        className="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-gray-100 object-cover"
+      />
+      <h3 className="font-semibold text-gray-900 text-sm">{name}</h3>
+      <p className="text-xs text-gray-500">{role}</p>
+    </div>
+  );
+}
+
+function PengajarCard({ name, image }: { name: string; image: string }) {
+  return (
+    <div className="flex flex-col items-center transition-transform hover:scale-105">
+      <img
+        src={image}
+        alt={name}
+        className="w-14 h-14 rounded-full border-2 border-gray-100 object-cover"
+      />
+      <p className="text-xs text-gray-700 mt-1.5 text-center leading-tight max-w-[80px]">{name}</p>
+    </div>
+  );
+}
 
 export default function StructureView() {
-  const { head, supervisors, assistants } = STRUCTURE_DATA;
-
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative mb-12">
-        <div className="bg-white p-6 rounded-2xl shadow-md border-t-4 border-blue-600 text-center w-64 transition-transform hover:scale-105">
-          <img src={head.image} alt="" className="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-blue-100" />
-          <h3 className="font-bold text-gray-900">{head.name}</h3>
-          <p className="text-sm text-gray-500">{head.role}</p>
+    <div className="space-y-16">
+      {/* Kepala Lab */}
+      <section className="flex flex-col items-center">
+        <h2 className="text-xl font-bold text-gray-800 mb-6">
+          Kepala Laboratorium
+        </h2>
+        <PersonCard
+          name={KEPALA_LAB.name}
+          role={KEPALA_LAB.role}
+          image={KEPALA_LAB.image}
+        />
+      </section>
+
+      {/* Dosen Lab */}
+      <section>
+        <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+          Dosen Lab
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {DOSEN_LAB.map((dosen, i) => (
+            <PersonCard key={i} name={dosen.name} role={dosen.role} image={dosen.image} />
+          ))}
         </div>
-        <div className="absolute left-1/2 top-full h-12 w-0.5 bg-gray-300 -translate-x-1/2"></div>
-      </div>
+      </section>
 
-      <div className="flex flex-wrap justify-center gap-8 mb-12 relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-md h-0.5 bg-gray-300 hidden md:block"></div>
-        {supervisors.map((sup, i) => (
-          <div key={i} className="relative flex flex-col items-center">
-            <div className="absolute -top-6 left-1/2 w-0.5 h-6 bg-gray-300 -translate-x-1/2 hidden md:block"></div>
-            <div className="bg-white p-5 rounded-2xl shadow-sm border-t-4 border-emerald-500 text-center w-56 transition-transform hover:scale-105">
-              <img src={sup.image} alt="" className="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-emerald-100" />
-              <h3 className="font-semibold text-gray-900">{sup.name}</h3>
-              <p className="text-xs text-gray-500">{sup.role}</p>
-            </div>
-            <div className="absolute left-1/2 top-full h-12 w-0.5 bg-gray-300 -translate-x-1/2"></div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-        {assistants.map((ast, i) => (
-          <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center transition-transform hover:scale-105">
-            <img src={ast.image} alt="" className="w-14 h-14 rounded-full mx-auto mb-3 border-2 border-gray-100" />
-            <h4 className="font-medium text-gray-900 text-sm">{ast.name}</h4>
-            <p className="text-[10px] text-gray-500 uppercase tracking-tight">{ast.role}</p>
-          </div>
-        ))}
-      </div>
+      {/* Praktikum */}
+      <section>
+        <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+          Pengajar Praktikum
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {PRAKTIKUM_DATA.map((praktikum, i) => {
+            const c = PRAKTIKUM_COLORS[i % PRAKTIKUM_COLORS.length];
+            return (
+              <div
+                key={praktikum.name}
+                className={`bg-white rounded-2xl shadow-sm border-t-4 ${c.border} overflow-hidden`}
+              >
+                <div className={`${c.bg} px-5 py-3 border-b border-gray-100`}>
+                  <h3 className={`font-bold text-sm ${c.text}`}>{praktikum.name}</h3>
+                </div>
+                <div className="p-5">
+                  <div className="flex flex-wrap justify-center gap-x-6 gap-y-4">
+                    {praktikum.pengajar.map((p) => (
+                      <PengajarCard key={p.name} name={p.name} image={p.image} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }
