@@ -5,16 +5,36 @@ import {
   inventarisService,
   type Inventaris,
 } from "@/app/services/inventarisService";
-import type { PeminjamanItem } from "./configPeminjaman";
+import type { PeminjamanItem } from "@/app/types/peminjaman";
 import {
   PraktikumData,
   praktikumService,
 } from "@/app/services/praktikumService";
 
+interface PraktikanData {
+  nim: string;
+  nama_lengkap: string;
+}
+
+interface PeminjamanFormData {
+  nim: string;
+  nama_mahasiswa: string;
+  keperluan: string;
+  alasan_lainnya?: string;
+  tanggal_pengajuan: string;
+  tanggal_pinjam: string;
+  jam_pinjam: string;
+  tanggal_kembali: string;
+  jam_kembali: string;
+  items: import("@/app/types/peminjaman").PeminjamanItem[];
+  status: import("@/app/types/peminjaman").StatusPeminjaman;
+  created_at: string;
+}
+
 interface PeminjamanModalProps {
-  praktikan: any;
+  praktikan: PraktikanData | null;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: PeminjamanFormData) => void;
 }
 
 export default function PeminjamanModal({
@@ -24,9 +44,21 @@ export default function PeminjamanModal({
 }: PeminjamanModalProps) {
   const [keperluan, setKeperluan] = useState("");
   const [alasanLainnya, setAlasanLainnya] = useState("");
-  const [tanggalPinjam, setTanggalPinjam] = useState("");
+
+  // Initialize dates with lazy state
+  const getInitialDates = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 2);
+    return {
+      tanggalPinjam: today,
+      tanggalKembali: tomorrow.toISOString().split("T")[0],
+    };
+  };
+
+  const [tanggalPinjam, setTanggalPinjam] = useState(() => getInitialDates().tanggalPinjam);
   const [jamPinjam, setJamPinjam] = useState("08:00");
-  const [tanggalKembali, setTanggalKembali] = useState("");
+  const [tanggalKembali, setTanggalKembali] = useState(() => getInitialDates().tanggalKembali);
   const [jamKembali, setJamKembali] = useState("16:00");
   const [items, setItems] = useState<PeminjamanItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,14 +102,6 @@ export default function PeminjamanModal({
       item.nama.toLowerCase().includes(ketersediaanSearch.toLowerCase()) ||
       item.kode_alat.toLowerCase().includes(ketersediaanSearch.toLowerCase()),
   );
-
-  useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setTanggalPinjam(today);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 2);
-    setTanggalKembali(tomorrow.toISOString().split("T")[0]);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

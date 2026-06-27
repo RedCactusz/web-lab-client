@@ -11,18 +11,19 @@ import KetersediaanModal from "./_features/KetersediaanModal";
 
 export default function MahasiswaDashboardPage() {
   const router = useRouter();
-  const [praktikan, setPraktikan] = useState<any>(null);
+  const [praktikan] = useState<{ nim: string; nama_lengkap: string } | null>(() => {
+    if (typeof window === "undefined") return null;
+    return authServicePraktikan.getPraktikanFromStorage();
+  });
   const [peminjaman, setPeminjaman] = useState<Peminjaman[]>([]);
   const [showPeminjamanModal, setShowPeminjamanModal] = useState(false);
   const [showKetersediaanModal, setShowKetersediaanModal] = useState(false);
 
   useEffect(() => {
-    const data = authServicePraktikan.getPraktikanFromStorage();
-    if (data) {
-      setPraktikan(data);
-      peminjamanService.getByNim(data.nim).then((riwayat) => setPeminjaman(riwayat));
+    if (praktikan?.nim) {
+      peminjamanService.getByNim(praktikan.nim).then((riwayat) => setPeminjaman(riwayat));
     }
-  }, []);
+  }, [praktikan?.nim]);
 
   const handleLogout = () => {
     authServicePraktikan.logout();
@@ -31,7 +32,7 @@ export default function MahasiswaDashboardPage() {
     router.refresh();
   };
 
-  const handleSubmitPeminjaman = async (data: any) => {
+  const handleSubmitPeminjaman = async (data: Omit<Peminjaman, "id">) => {
     await peminjamanService.create(data);
     if (praktikan?.nim) {
       const riwayat = await peminjamanService.getByNim(praktikan.nim);

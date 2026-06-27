@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { landingData } from '../_contents/landingData';
 
 export default function LandingView() {
@@ -36,9 +37,11 @@ export default function LandingView() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative">
-            <img
+            <Image
               src={about.image}
               alt="Lab Equipment"
+              width={800}
+              height={600}
               className="rounded-3xl shadow-2xl"
             />
             <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-2xl hidden md:block shadow-xl">
@@ -137,7 +140,7 @@ export default function LandingView() {
         <p className="text-gray-600 mb-10 max-w-2xl mx-auto">{partners.description}</p>
         <div className="flex flex-wrap justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
           {partners.items.map((partner, idx) => (
-            <img key={idx} src={partner.src} alt={partner.alt} className="h-12 object-contain" />
+            <Image key={idx} src={partner.src} alt={partner.alt} width={48} height={48} className="h-12 object-contain" />
           ))}
         </div>
         <div className="mt-12">

@@ -24,8 +24,9 @@ export default function LoginFormPraktikan() {
         localStorage.setItem("user_praktikan", JSON.stringify(data));
         router.push("/admin/mahasiswa");
       }
-    } catch (error: any) {
-      alert("Error Database: " + error.message);
+    } catch (error) {
+      const err = error as { message?: string };
+      alert("Error Database: " + (err.message || "Unknown error"));
     } finally {
       setLoading(false);
     }
