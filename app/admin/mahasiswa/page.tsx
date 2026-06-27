@@ -24,9 +24,8 @@ export default function MahasiswaDashboardPage() {
     }
   }, []);
 
-  const handleLogout = () => {
-    authServicePraktikan.logout();
-    localStorage.removeItem("user_pengajar");
+  const handleLogout = async () => {
+    await authServicePraktikan.logout();
     router.push("/");
     router.refresh();
   };

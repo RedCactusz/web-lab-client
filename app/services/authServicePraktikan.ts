@@ -52,8 +52,24 @@ export const authServicePraktikan = {
     return !!localStorage.getItem("user_praktikan");
   },
 
-  logout: (): void => {
+  logout: async (): Promise<void> => {
     if (typeof window === "undefined") return;
+
+    const token = localStorage.getItem("mahasiswa_token");
+    if (token) {
+      try {
+        await fetch(`${API_URL}/logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch {
+        // tetap lanjutkan pembersihan local storage meskipun request gagal
+      }
+    }
+
     localStorage.removeItem("user_praktikan");
     localStorage.removeItem("mahasiswa_token");
   },
