@@ -1,5 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/client_api';
 
+export interface RegisterPraktikanData {
+  nim: string;
+  nama_lengkap: string;
+  password: string;
+  angkatan?: number;
+}
+
 export interface PraktikanUser {
   id: number;
   nim: string;
@@ -58,7 +65,7 @@ export const authServicePraktikan = {
     localStorage.removeItem("mahasiswa_token");
   },
 
-  registerPraktikan: async (userData: any): Promise<boolean> => {
+  registerPraktikan: async (userData: RegisterPraktikanData): Promise<boolean> => {
     try {
       const response = await fetch(`${API_URL}/register/mahasiswa`, {
         method: 'POST',

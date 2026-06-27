@@ -32,8 +32,9 @@ export default function RegisterMahasiswaPage() {
       } else {
         alert("Pendaftaran gagal. Silakan coba lagi atau hubungi administrator.");
       }
-    } catch (error: any) {
-      alert("Error: " + error.message);
+    } catch (error) {
+      const err = error as { message?: string };
+      alert("Error: " + (err.message || "Unknown error"));
     } finally {
       setLoading(false);
     }

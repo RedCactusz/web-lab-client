@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { KEPALA_LAB, DOSEN_LAB, PRAKTIKUM_DATA } from "@/app/(public)/struktur/_contents/structureData";
 
 const PRAKTIKUM_COLORS = [
@@ -10,9 +11,11 @@ const PRAKTIKUM_COLORS = [
 function PersonCard({ name, role, image }: { name: string; role: string; image: string }) {
   return (
     <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 text-center transition-transform hover:scale-105">
-      <img
+      <Image
         src={image}
         alt={name}
+        width={80}
+        height={80}
         className="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-gray-100 object-cover"
       />
       <h3 className="font-semibold text-gray-900 text-sm">{name}</h3>
@@ -24,9 +27,11 @@ function PersonCard({ name, role, image }: { name: string; role: string; image: 
 function PengajarCard({ name, image }: { name: string; image: string }) {
   return (
     <div className="flex flex-col items-center transition-transform hover:scale-105">
-      <img
+      <Image
         src={image}
         alt={name}
+        width={56}
+        height={56}
         className="w-14 h-14 rounded-full border-2 border-gray-100 object-cover"
       />
       <p className="text-xs text-gray-700 mt-1.5 text-center leading-tight max-w-[80px]">{name}</p>

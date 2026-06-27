@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { NEWS_ITEMS } from "@/app/(public)/berita/_contents/newsData";
 
 export default function NewsView() {
@@ -6,7 +7,7 @@ export default function NewsView() {
       {NEWS_ITEMS.map((news) => (
         <div key={news.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-xl transition-all duration-300 group">
           <div className="h-48 overflow-hidden">
-            <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src={news.image} alt={news.title} width={400} height={192} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
