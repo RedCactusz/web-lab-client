@@ -65,7 +65,9 @@ export const authServicePraktikan = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
-      return response.ok;
+      if (!response.ok) return false;
+      const json = await response.json();
+      return json.success ?? true;
     } catch {
       return false;
     }
