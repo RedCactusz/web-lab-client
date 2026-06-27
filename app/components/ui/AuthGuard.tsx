@@ -17,7 +17,6 @@ export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuar
     const user = localStorage.getItem(storageKey);
 
     if (user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsAuthenticated(true);
       setIsReady(true);
       return;
