@@ -23,25 +23,6 @@ export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuar
       return;
     }
 
-    // Cek apakah role lain yang login (cross-role redirect)
-    if (storageKey === "user_pengajar") {
-      const praktikan = localStorage.getItem("user_praktikan");
-      if (praktikan) {
-        router.replace("/admin/mahasiswa");
-        setIsReady(true);
-        return;
-      }
-    }
-
-    if (storageKey === "user_praktikan") {
-      const pengajar = localStorage.getItem("user_pengajar");
-      if (pengajar) {
-        router.replace("/admin/pengajar/penilaian");
-        setIsReady(true);
-        return;
-      }
-    }
-
     // Tidak ada yang login, redirect ke halaman login sesuai role
     setIsReady(true);
     if (redirectTo) {

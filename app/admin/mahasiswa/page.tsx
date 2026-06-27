@@ -8,6 +8,7 @@ import Table from "@/app/components/tables/Table";
 import { columnsPeminjaman, type Peminjaman } from "./_features/configPeminjaman";
 import PeminjamanModal from "./_features/PeminjamanModal";
 import KetersediaanModal from "./_features/KetersediaanModal";
+import AuthGuard from "@/app/components/ui/AuthGuard";
 
 export default function MahasiswaDashboardPage() {
   const router = useRouter();
@@ -42,7 +43,8 @@ export default function MahasiswaDashboardPage() {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <AuthGuard storageKey="user_praktikan" redirectTo="/mahasiswa">
+      <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -88,6 +90,7 @@ export default function MahasiswaDashboardPage() {
       {showKetersediaanModal && (
         <KetersediaanModal onClose={() => setShowKetersediaanModal(false)} />
       )}
-    </div>
+      </div>
+    </AuthGuard>
   );
 }
