@@ -1,7 +1,7 @@
 import { KERJASAMA_CONTENT } from "@/app/(public)/kerjasama/_contents/kerjasamaData";
 
 export default function KerjasamaView() {
-  const { title, subtitle, visi, pillars } = KERJASAMA_CONTENT;
+  const { visi, pillars } = KERJASAMA_CONTENT;
 
   return (
     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 space-y-8">

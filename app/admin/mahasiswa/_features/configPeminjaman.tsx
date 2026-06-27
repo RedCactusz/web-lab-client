@@ -1,5 +1,5 @@
 import type { Column } from "@/app/components/tables/Table";
-import type { Peminjaman, StatusPeminjaman, PeminjamanItem, PengembalianItem } from "@/app/types/peminjaman";
+import type { Peminjaman, StatusPeminjaman, PeminjamanItem } from "@/app/types/peminjaman";
 
 // Re-export for backward compatibility
 export type { Peminjaman, PeminjamanItem };
