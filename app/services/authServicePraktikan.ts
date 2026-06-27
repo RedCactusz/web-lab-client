@@ -65,6 +65,11 @@ export const authServicePraktikan = {
     localStorage.removeItem("mahasiswa_token");
   },
 
+  getToken: (): string => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("mahasiswa_token") || "";
+  },
+
   registerPraktikan: async (userData: RegisterPraktikanData): Promise<boolean> => {
     try {
       const response = await fetch(`${API_URL}/register/mahasiswa`, {
