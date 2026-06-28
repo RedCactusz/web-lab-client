@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { publicService, type OrganizationStructure } from "@/app/services/publicService";
+import { publicService } from "@/app/services/publicService";
 
 const PRAKTIKUM_COLORS = [
   { border: "border-blue-600", ring: "ring-blue-100", bg: "bg-blue-50", text: "text-blue-700" },
