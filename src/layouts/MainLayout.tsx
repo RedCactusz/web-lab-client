@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import Footer from './Footer'
 
 export default function MainLayout() {
   const { isAuthenticated, user, logout } = useAuth()
@@ -39,9 +40,7 @@ export default function MainLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t bg-white py-4 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Lab SGG
-      </footer>
+      <Footer companyName="Lab Survei Geodesi dan Geometri - UPN Veteran Yogyakarta" />
     </div>
   )
 }
