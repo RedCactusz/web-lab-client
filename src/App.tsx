@@ -3,6 +3,7 @@ import MainLayout from '@/layouts/MainLayout'
 import Landing from '@/pages/Landing'
 import Login from '@/pages/auth/Login'
 import Dashboard from '@/pages/Dashboard'
+import AlatPage from '@/pages/Alat'
 import ProtectedRoute from '@/routes/ProtectedRoute'
 
 export default function App() {
@@ -17,6 +18,14 @@ export default function App() {
             element={
               <ProtectedRoute roles={['mahasiswa', 'asisten']}>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="alat"
+            element={
+              <ProtectedRoute roles={['mahasiswa', 'asisten']}>
+                <AlatPage />
               </ProtectedRoute>
             }
           />

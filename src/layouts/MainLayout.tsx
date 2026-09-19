@@ -18,6 +18,9 @@ export default function MainLayout() {
                 <Link to="/dashboard" className="text-sm text-gray-600 hover:text-gray-900">
                   Dashboard
                 </Link>
+                <Link to="/alat" className="text-sm text-gray-600 hover:text-gray-900">
+                  Peminjaman Alat
+                </Link>
                 <span className="text-sm text-gray-500">{user?.nama}</span>
                 <button
                   onClick={() => void logout()}
