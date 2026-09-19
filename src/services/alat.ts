@@ -12,11 +12,37 @@ export interface Alat {
   tipe: string
   serial_number: string
   jumlah: number
+  kondisi: KondisiEntry[]
+  kondisi_ringkas: KondisiRingkas
   lokasi_penyimpanan: string
   ketersediaan: KetersediaanStatus
 }
 
+export interface KatalogAlat {
+  nama_alat: string
+  jumlah_unit: number
+  jumlah_tersedia: number
+  items: Alat[]
+}
+
 export type AlatLogStatus = 'keluar' | 'masuk'
+
+export interface KondisiCatatan {
+  komponen: string
+  keterangan: string
+}
+
+export interface KondisiEntry {
+  status: string
+  jumlah: number
+  catatan: KondisiCatatan[]
+}
+
+export const KONDISI_STATUSES = ['baik', 'rusak_ringan', 'rusak_berat', 'maintenance'] as const
+
+export type KondisiStatus = (typeof KONDISI_STATUSES)[number]
+
+export type KondisiRingkas = Record<KondisiStatus, number>
 
 export interface AlatLog {
   id: number
@@ -31,7 +57,7 @@ export interface AlatLog {
 }
 
 interface AlatListResponse {
-  data: Alat[]
+  data: KatalogAlat[]
 }
 
 export interface AlatLogListMeta {
@@ -49,14 +75,6 @@ export interface AlatLogListResponse {
 export const alatService = {
   async getAll(): Promise<AlatListResponse> {
     return api<AlatListResponse>('/api/client/alat')
-  },
-
-  async pinjam(id: number): Promise<{ message: string }> {
-    return api<{ message: string }>(`/api/client/alat/${id}/pinjam`, { method: 'POST' })
-  },
-
-  async kembali(id: number): Promise<{ message: string }> {
-    return api<{ message: string }>(`/api/client/alat/${id}/kembali`, { method: 'POST' })
   },
 
   async riwayat(page = 1): Promise<AlatLogListResponse> {
