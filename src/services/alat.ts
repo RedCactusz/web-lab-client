@@ -25,8 +25,6 @@ export interface KatalogAlat {
   items: Alat[]
 }
 
-export type AlatLogStatus = 'keluar' | 'masuk'
-
 export interface KondisiCatatan {
   komponen: string
   keterangan: string
@@ -44,18 +42,6 @@ export type KondisiStatus = (typeof KONDISI_STATUSES)[number]
 
 export type KondisiRingkas = Record<KondisiStatus, number>
 
-export interface AlatLog {
-  id: number
-  id_log: string
-  keperluan: string
-  nim_pic: number | null
-  nama_pic: string | null
-  inventaris: string
-  nama_alat: string | null
-  status: AlatLogStatus
-  waktu: string
-}
-
 interface AlatListResponse {
   data: KatalogAlat[]
 }
@@ -67,17 +53,8 @@ export interface AlatLogListMeta {
   total: number
 }
 
-export interface AlatLogListResponse {
-  data: AlatLog[]
-  meta: AlatLogListMeta
-}
-
 export const alatService = {
   async getAll(): Promise<AlatListResponse> {
     return api<AlatListResponse>('/api/client/alat')
-  },
-
-  async riwayat(page = 1): Promise<AlatLogListResponse> {
-    return api<AlatLogListResponse>(`/api/client/alat-log?page=${page}`)
   },
 }

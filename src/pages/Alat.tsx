@@ -5,7 +5,6 @@ import {
   KONDISI_STATUSES,
   peminjamanService,
   type Alat,
-  type AlatLog,
   type AlatLogListMeta,
   type KatalogAlat,
   type KetersediaanStatus,
@@ -69,9 +68,6 @@ export default function AlatPage() {
   const [peminjamanMeta, setPeminjamanMeta] = useState<AlatLogListMeta | null>(null)
   const [peminjamanPage, setPeminjamanPage] = useState(1)
   const [katalog, setKatalog] = useState<KatalogAlat[]>([])
-  const [logList, setLogList] = useState<AlatLog[]>([])
-  const [logMeta, setLogMeta] = useState<AlatLogListMeta | null>(null)
-  const [logPage, setLogPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [expandedNama, setExpandedNama] = useState<string | null>(null)
@@ -91,18 +87,12 @@ export default function AlatPage() {
     setKatalog(response.data)
   }, [])
 
-  const loadRiwayat = useCallback(async (page: number) => {
-    const response = await alatService.riwayat(page)
-    setLogList(response.data)
-    setLogMeta(response.meta)
-  }, [])
-
   useEffect(() => {
     let cancelled = false
     setIsLoading(true)
     setError(null)
 
-    Promise.all([loadPeminjaman(peminjamanPage), loadAlat(), loadRiwayat(logPage)])
+    Promise.all([loadPeminjaman(peminjamanPage), loadAlat()])
       .catch((err) => {
         if (!cancelled) {
           setError(err instanceof ApiError ? err.message : 'Gagal memuat data.')
@@ -115,7 +105,7 @@ export default function AlatPage() {
     return () => {
       cancelled = true
     }
-  }, [loadPeminjaman, loadAlat, loadRiwayat, peminjamanPage, logPage])
+  }, [loadPeminjaman, loadAlat, peminjamanPage])
 
   const handlePengajuanSuccess = async () => {
     setIsModalOpen(false)
@@ -177,7 +167,12 @@ export default function AlatPage() {
                   <td className="whitespace-nowrap px-4 py-3 text-gray-600">
                     {formatWaktu(peminjaman.dibuat_pada)}
                   </td>
-                  <td className="max-w-48 px-4 py-3">{peminjaman.keperluan}</td>
+                  <td className="max-w-48 px-4 py-3">
+                    {peminjaman.keperluan_label}
+                    {peminjaman.praktikum_slug && (
+                      <span className="block text-xs text-gray-500">{peminjaman.praktikum_slug}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <ul className="space-y-0.5">
                       {peminjaman.items.map((item) => (
@@ -300,53 +295,6 @@ export default function AlatPage() {
           })
         )}
       </div>
-
-      <h2 className="mt-10 text-xl font-bold">Riwayat Pergerakan Alat</h2>
-      <div className="mt-4 overflow-x-auto rounded-lg border bg-white">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b bg-gray-50 text-xs uppercase text-gray-500">
-            <tr>
-              <th className="px-4 py-3">Waktu</th>
-              <th className="px-4 py-3">ID Log</th>
-              <th className="px-4 py-3">Alat</th>
-              <th className="px-4 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {!isLoading && logList.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                  Kamu belum pernah meminjam alat.
-                </td>
-              </tr>
-            ) : (
-              logList.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-4 py-3 text-gray-600">{formatWaktu(log.waktu)}</td>
-                  <td className="px-4 py-3 font-mono">{log.id_log}</td>
-                  <td className="px-4 py-3">
-                    <span className="font-mono">{log.inventaris}</span>
-                    <span className="block text-xs text-gray-500">{log.nama_alat ?? '-'}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        log.status === 'keluar'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}
-                    >
-                      {log.status === 'keluar' ? 'Dipinjam' : 'Dikembalikan'}
-                    </span>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {logMeta && logMeta.last_page > 1 && <Pagination page={logPage} meta={logMeta} onChange={setLogPage} />}
 
       {isModalOpen && (
         <PeminjamanFormModal

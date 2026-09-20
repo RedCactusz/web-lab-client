@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { ApiError, peminjamanService, type Alat } from '@/services'
+import { useEffect, useMemo, useState } from 'react'
+import { ApiError, peminjamanService, type Alat, type PeminjamanOptions } from '@/services'
 
 interface ItemRow {
   key: number
@@ -14,14 +14,26 @@ interface Props {
 }
 
 export default function PeminjamanFormModal({ alatList, onClose, onSuccess }: Props) {
+  const [options, setOptions] = useState<PeminjamanOptions | null>(null)
   const [keperluan, setKeperluan] = useState('')
+  const [praktikumSlug, setPraktikumSlug] = useState('')
   const [rows, setRows] = useState<ItemRow[]>([{ key: 1, alat_id: '', jumlah: '1' }])
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  useEffect(() => {
+    peminjamanService
+      .options()
+      .then(setOptions)
+      .catch(() => setError('Gagal memuat pilihan keperluan.'))
+  }, [])
+
+  const praktikumOptions = keperluan === 'praktikum' ? (options?.praktikum ?? []) : []
+
   const isFormValid = useMemo(() => {
     return (
-      keperluan.trim() !== '' &&
+      keperluan !== '' &&
+      (keperluan !== 'praktikum' || praktikumSlug !== '') &&
       rows.length > 0 &&
       rows.every((row) => {
         if (row.alat_id === '') return false
@@ -30,7 +42,7 @@ export default function PeminjamanFormModal({ alatList, onClose, onSuccess }: Pr
         return alat !== undefined && Number.isInteger(jumlah) && jumlah >= 1 && jumlah <= alat.jumlah
       })
     )
-  }, [keperluan, rows, alatList])
+  }, [keperluan, praktikumSlug, rows, alatList])
 
   const updateRow = (key: number, patch: Partial<ItemRow>) => {
     setRows((current) => current.map((row) => (row.key === key ? { ...row, ...patch } : row)))
@@ -50,7 +62,8 @@ export default function PeminjamanFormModal({ alatList, onClose, onSuccess }: Pr
     setError(null)
     try {
       await peminjamanService.create({
-        keperluan: keperluan.trim(),
+        keperluan,
+        ...(keperluan === 'praktikum' && { praktikum_slug: praktikumSlug }),
         items: rows.map((row) => ({ alat_id: Number(row.alat_id), jumlah: Number(row.jumlah) })),
       })
       onSuccess()
@@ -77,15 +90,47 @@ export default function PeminjamanFormModal({ alatList, onClose, onSuccess }: Pr
           <label htmlFor="keperluan" className="text-sm font-medium">
             Keperluan
           </label>
-          <textarea
+          <select
             id="keperluan"
             value={keperluan}
-            onChange={(event) => setKeperluan(event.target.value)}
-            rows={2}
-            placeholder="Contoh: praktikum survei pemetaan"
+            onChange={(event) => {
+              setKeperluan(event.target.value)
+              setPraktikumSlug('')
+            }}
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
-          />
+          >
+            <option value="">Pilih keperluan...</option>
+            {(options?.keperluan ?? []).map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {keperluan === 'praktikum' && (
+          <div className="mt-4">
+            <label htmlFor="praktikum" className="text-sm font-medium">
+              Praktikum
+            </label>
+            <select
+              id="praktikum"
+              value={praktikumSlug}
+              onChange={(event) => setPraktikumSlug(event.target.value)}
+              className="mt-1 w-full rounded-md border px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
+            >
+              <option value="">Pilih praktikum...</option>
+              {praktikumOptions.map((option) => (
+                <option key={option.slug} value={option.slug}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {options !== null && praktikumOptions.length === 0 && (
+              <p className="mt-1 text-xs text-gray-500">Kamu tidak terdaftar pada praktikum mana pun.</p>
+            )}
+          </div>
+        )}
 
         <div className="mt-4">
           <div className="flex items-center justify-between">
